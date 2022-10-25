@@ -3,7 +3,6 @@ package cn.cat;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelReader;
 import com.alibaba.excel.ExcelWriter;
-import com.alibaba.excel.read.builder.ExcelReaderBuilder;
 import com.alibaba.excel.read.metadata.ReadSheet;
 import com.alibaba.excel.write.metadata.WriteSheet;
 
@@ -65,16 +64,17 @@ public class Main {
         }
 
         //读取所有数据 并以sheet分组
-        ExcelReader excelReader=EasyExcel.read(filePath).build();
         List<ExcelSheet> excelSheetList=new ArrayList<>();
-        List<ReadSheet> readSheetList=excelReader.excelExecutor().sheetList();
-        for (ReadSheet readSheet:readSheetList){
-            ExcelSheet excelSheet=new ExcelSheet();
-            excelSheet.setSheetNo(readSheet.getSheetNo());
-            excelSheet.setSheetName(readSheet.getSheetName());
-            List<Student> students=EasyExcel.read(filePath).sheet(excelSheet.getSheetNo(),excelSheet.getSheetName()).doReadSync();
-            excelSheet.setStudentList(students);
-            excelSheetList.add(excelSheet);
+        try (ExcelReader excelReader=EasyExcel.read(filePath).build()){
+            List<ReadSheet> readSheetList=excelReader.excelExecutor().sheetList();
+            for (ReadSheet readSheet:readSheetList){
+                ExcelSheet excelSheet=new ExcelSheet();
+                excelSheet.setSheetNo(readSheet.getSheetNo());
+                excelSheet.setSheetName(readSheet.getSheetName());
+                List<Student> students=EasyExcel.read(filePath).sheet(excelSheet.getSheetNo(),excelSheet.getSheetName()).doReadSync();
+                excelSheet.setStudentList(students);
+                excelSheetList.add(excelSheet);
+            }
         }
 
         for (ExcelSheet excelSheet:excelSheetList){
