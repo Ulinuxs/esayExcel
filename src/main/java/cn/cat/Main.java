@@ -2,6 +2,7 @@ package cn.cat;
 
 import cn.cat.entity.ExcelSheet;
 import cn.cat.entity.Student;
+import cn.cat.listener.DefaultExcelListener;
 import cn.cat.listener.StudentListener;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelReader;
@@ -44,22 +45,22 @@ public class Main {
 
 
         //读取第一个sheet中的数据
-        EasyExcel.read(filePath,Student.class,new StudentListener()).sheet().doRead();
+        EasyExcel.read(filePath,Student.class,new DefaultExcelListener()).sheet().doRead();
 
         //读取所有sheet中的数据
-        EasyExcel.read(filePath, Student.class,new StudentListener()).doReadAll();
+        EasyExcel.read(filePath, Student.class,new DefaultExcelListener()).doReadAll();
 
         //读取指定sheet中的数据
         try (ExcelReader excelReader = EasyExcel.read(filePath).build()) {
-            ReadSheet readSheet1=EasyExcel.readSheet(0).head(Student.class).registerReadListener(new StudentListener()).build();
-            ReadSheet readSheet2=EasyExcel.readSheet(1).head(Student.class).registerReadListener(new StudentListener()).build();
+            ReadSheet readSheet1=EasyExcel.readSheet(0).head(Student.class).registerReadListener(new DefaultExcelListener()).build();
+            ReadSheet readSheet2=EasyExcel.readSheet(1).head(Student.class).registerReadListener(new DefaultExcelListener()).build();
             excelReader.read(readSheet1, readSheet2);
             excelReader.finish();
         }
 
         //读取指定sheet中的数据并用集合存储数据
-        List<Student> studentList1=EasyExcel.read(filePath,Student.class,null).sheet(0).doReadSync();
-        List<Student> studentList2=EasyExcel.read(filePath,Student.class,null).sheet(1).doReadSync();
+        List<Student> studentList1=EasyExcel.read(filePath,Student.class,new DefaultExcelListener()).sheet(0).doReadSync();
+        List<Student> studentList2=EasyExcel.read(filePath,Student.class,new DefaultExcelListener()).sheet(1).doReadSync();
 
         for (int i=0;i<studentList1.size();i++){
             if (studentList1.get(i).equals(studentList2.get(i))){
