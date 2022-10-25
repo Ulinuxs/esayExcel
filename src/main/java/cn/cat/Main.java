@@ -1,5 +1,8 @@
 package cn.cat;
 
+import cn.cat.entity.ExcelSheet;
+import cn.cat.entity.Student;
+import cn.cat.listener.StudentListener;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelReader;
 import com.alibaba.excel.ExcelWriter;
@@ -9,6 +12,11 @@ import com.alibaba.excel.write.metadata.WriteSheet;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author cat
+ * @date 2022/10/25
+ * @description 启动类
+ */
 public class Main {
     public static void main(String[] args) {
         String filePath="D://student.xlsx";
@@ -21,6 +29,7 @@ public class Main {
             studentList.add(student);
         }
 
+
         //生成单个sheet并写入数据
         EasyExcel.write(filePath, Student.class).sheet().doWrite(studentList);
 
@@ -30,6 +39,7 @@ public class Main {
                 WriteSheet writeSheet = EasyExcel.writerSheet("学生列表"+i).build();
                 excelWriter.write(studentList,writeSheet);
             }
+            excelWriter.finish();
         }
 
 
@@ -44,6 +54,7 @@ public class Main {
             ReadSheet readSheet1=EasyExcel.readSheet(0).head(Student.class).registerReadListener(new StudentListener()).build();
             ReadSheet readSheet2=EasyExcel.readSheet(1).head(Student.class).registerReadListener(new StudentListener()).build();
             excelReader.read(readSheet1, readSheet2);
+            excelReader.finish();
         }
 
         //读取指定sheet中的数据并用集合存储数据
@@ -75,6 +86,7 @@ public class Main {
                 excelSheet.setStudentList(students);
                 excelSheetList.add(excelSheet);
             }
+            excelReader.finish();
         }
 
         for (ExcelSheet excelSheet:excelSheetList){
